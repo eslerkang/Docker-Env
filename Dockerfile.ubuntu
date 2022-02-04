@@ -1,0 +1,35 @@
+FROM ubuntu:20.04
+
+ENV LC_ALL=C.UTF-8
+
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+WORKDIR /root
+
+RUN apt-get update
+
+RUN apt-get install -y sudo build-essential curl zsh git wget
+
+RUN git config --global user.name eslerkang
+RUN git config --global user.email eslerkang@gmail.com
+
+RUN zsh
+
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" -y
+
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+
+RUN echo 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"' >> ~/.zshrc
+RUN echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
+
+RUN source ~/.zshrc
+
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
+RUN source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+RUN echo 'ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#00afff"' >> ~/.zshrc
+
+RUN npm i -g yarn
+
+CMD ["zsh"]
